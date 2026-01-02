@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Center - Métricas de Venta</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="cdnjs.cloudflare.com" rel="stylesheet">
+</head>
+<body class="bg-[#f8fafc] min-h-screen font-sans text-slate-700">
+
+    <!-- Header de Navegación -->
+    <header class="bg-indigo-700 text-white shadow-lg p-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-store text-2xl"></i>
+                <h1 class="text-xl font-bold tracking-tight">Market<span class="text-orange-400">Pro</span> <span class="hidden md:inline text-indigo-200 font-light">| Panel de Vendedor</span></h1>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="relative">
+                    <i class="fas fa-bell text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-orange-500 text-[10px] rounded-full px-1 border-2 border-indigo-700">3</span>
+                </div>
+                <div class="flex items-center gap-2 border-l border-indigo-600 pl-6">
+                    <img src="ui-avatars.com" class="w-8 h-8 rounded-full border border-indigo-400" alt="Avatar">
+                    <span class="text-sm font-medium hidden sm:block">Vendedor Premium</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-6 space-y-8">
+        
+        <!-- Sección de Bienvenida y Filtros -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 animate-[fadeIn_0.5s_ease-out]">
+            <div>
+                <h2 class="text-3xl font-black text-slate-800">Resumen de Ventas 2026</h2>
+                <p class="text-slate-500">Última actualización: Hoy, 09:42 AM</p>
+            </div>
+            <div class="flex gap-2 bg-white p-1 rounded-xl shadow-sm border border-slate-200">
+                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-md shadow-indigo-200">Hoy</button>
+                <button class="px-4 py-2 hover:bg-slate-100 text-slate-500 rounded-lg text-sm font-medium transition-all">7 días</button>
+                <button class="px-4 py-2 hover:bg-slate-100 text-slate-500 rounded-lg text-sm font-medium transition-all">30 días</button>
+            </div>
+        </div>
+
+        <!-- Tarjetas de Métricas (KPIS) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <!-- Card 1: Ingresos -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-indigo-500 hover:shadow-xl transition-all group overflow-hidden relative">
+                <div class="absolute -right-4 -top-4 bg-indigo-50 w-24 h-24 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                <div class="relative z-10">
+                    <p class="text-sm font-bold text-slate-400 uppercase tracking-wider">Ventas Netas</p>
+                    <h3 class="text-3xl font-black text-slate-800 mt-2">$42,850.00</h3>
+                    <div class="flex items-center gap-2 mt-4 text-emerald-500 font-bold text-sm">
+                        <i class="fas fa-arrow-trend-up"></i>
+                        <span>+12.5% vs ayer</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Pedidos -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-violet-500 hover:shadow-xl transition-all group overflow-hidden relative">
+                <div class="absolute -right-4 -top-4 bg-violet-50 w-24 h-24 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                <div class="relative z-10">
+                    <p class="text-sm font-bold text-slate-400 uppercase tracking-wider">Pedidos Nuevos</p>
+                    <h3 class="text-3xl font-black text-slate-800 mt-2">158</h3>
+                    <div class="flex items-center gap-2 mt-4 text-emerald-500 font-bold text-sm">
+                        <i class="fas fa-arrow-trend-up"></i>
+                        <span>+4.2%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Stock Crítico -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-500 hover:shadow-xl transition-all group overflow-hidden relative">
+                <div class="absolute -right-4 -top-4 bg-orange-50 w-24 h-24 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                <div class="relative z-10">
+                    <p class="text-sm font-bold text-slate-400 uppercase tracking-wider">Stock Bajo</p>
+                    <h3 class="text-3xl font-black text-slate-800 mt-2">12 Items</h3>
+                    <div class="flex items-center gap-2 mt-4 text-orange-500 font-bold text-sm">
+                        <i class="fas fa-exclamation-triangle animate-pulse"></i>
+                        <span>Requiere atención</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Conversión -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-cyan-500 hover:shadow-xl transition-all group overflow-hidden relative">
+                <div class="absolute -right-4 -top-4 bg-cyan-50 w-24 h-24 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                <div class="relative z-10">
+                    <p class="text-sm font-bold text-slate-400 uppercase tracking-wider">Tasa de Conversión</p>
+                    <h3 class="text-3xl font-black text-slate-800 mt-2">3.8%</h3>
+                    <div class="flex items-center gap-2 mt-4 text-slate-400 font-bold text-sm">
+                        <i class="fas fa-minus"></i>
+                        <span>Sin cambios</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenedor Inferior: Gráfico Simulado y Tabla -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Gráfico Simulado (Visualización con Tailwind) -->
+            <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                <div class="flex justify-between items-center mb-8">
+                    <h4 class="text-lg font-bold text-slate-800">Tendencia de Ventas (24h)</h4>
+                    <i class="fas fa-ellipsis-v text-slate-300"></i>
+                </div>
+                <!-- Mini barras simulando un gráfico -->
+                <div class="flex items-end justify-between h-48 gap-2">
+                    <div class="w-full bg-indigo-100 rounded-t-lg h-24 hover:bg-indigo-500 transition-colors duration-300"></div>
+                    <div class="w-full bg-indigo-100 rounded-t-lg h-32 hover:bg-indigo-500 transition-colors duration-300"></div>
+                    <div class="w-full bg-indigo-200 rounded-t-lg h-40 hover:bg-indigo-500 transition-colors duration-300 shadow-lg shadow-indigo-100"></div>
+                    <div class="w-full bg-indigo-100 rounded-t-lg h-16 hover:bg-indigo-500 transition-colors duration-300"></div>
+                    <div class="w-full bg-indigo-600 rounded-t-lg h-48 shadow-xl shadow-indigo-200"></div>
+                    <div class="w-full bg-indigo-200 rounded-t-lg h-36 hover:bg-indigo-500 transition-colors duration-300"></div>
+                    <div class="w-full bg-indigo-100 rounded-t-lg h-28 hover:bg-indigo-500 transition-colors duration-300"></div>
+                </div>
+                <div class="flex justify-between mt-4 text-[10px] font-bold text-slate-400 uppercase">
+                    <span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span><span>23:59</span>
+                </div>
+            </div>
+
+            <!-- Tabla de Productos TOP -->
+            <div class="bg-slate-900 rounded-3xl p-8 text-white shadow-2xl">
+                <h4 class="text-lg font-bold mb-6">Productos Top <span class="text-indigo-400 ml-2">#1</span></h4>
+                <div class="space-y-6">
+                    <!-- Producto 1 -->
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
+                            <i class="fas fa-headset text-indigo-400"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold truncate">Audífonos Gamer X-200</p>
+                            <p class="text-xs text-slate-400">42 ventas hoy</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-bold text-emerald-400">+$2,400</p>
+                        </div>
+                    </div>
+                    <!-- Producto 2 -->
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
+                            <i class="fas fa-watch text-orange-400"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold truncate">Smartwatch Serie 9</p>
+                            <p class="text-xs text-slate-400">18 ventas hoy</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-bold text-emerald-400">+$5,100</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="w-full mt-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm font-bold transition-all uppercase tracking-widest">
+                    Ver Inventario Completo
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</body>
+</html>

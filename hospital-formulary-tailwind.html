@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Pacientes - Hospital Vitalis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="cdnjs.cloudflare.com" rel="stylesheet">
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4 md:p-8">
+
+    <!-- Contenedor Principal con Animación de Entrada -->
+    <div class="max-w-4xl w-full bg-white rounded-3xl shadow-2xl shadow-blue-100/50 overflow-hidden flex flex-col md:flex-row animate-[fadeIn_0.8s_ease-out]">
+        
+        <!-- Lateral Informativo (Estilo Corporativo) -->
+        <div class="w-full md:w-1/3 bg-gradient-to-br from-cyan-600 to-blue-700 p-8 text-white flex flex-col justify-between">
+            <div>
+                <div class="flex items-center gap-2 mb-8">
+                    <i class="fas fa-heartbeat text-3xl text-cyan-200"></i>
+                    <span class="text-xl font-bold tracking-tight">Vitalis<span class="font-light">Cloud</span></span>
+                </div>
+                <h2 class="text-2xl font-semibold mb-4">Portal del Paciente</h2>
+                <p class="text-cyan-100 text-sm leading-relaxed">
+                    Al registrarte, podrás agendar citas, revisar resultados de laboratorio y contactar a tus especialistas de forma segura.
+                </p>
+            </div>
+            
+            <div class="hidden md:block">
+                <div class="flex items-center gap-3 mb-4 text-sm text-cyan-100">
+                    <i class="fas fa-shield-check text-cyan-300"></i>
+                    Datos encriptados bajo norma HIPAA
+                </div>
+                <div class="w-full h-1 bg-white/20 rounded-full overflow-hidden">
+                    <div class="w-1/3 h-full bg-cyan-300"></div>
+                </div>
+                <p class="text-[10px] mt-2 text-cyan-200 uppercase tracking-widest font-bold">Paso 1 de 3: Datos Básicos</p>
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <div class="w-full md:w-2/3 p-8 md:p-12">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6">Crear Expediente Digital</h3>
+            
+            <form action="#" class="space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Username -->
+                    <div class="relative group">
+                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">Usuario</label>
+                        <div class="relative">
+                            <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-600 transition-colors"></i>
+                            <input type="text" placeholder="ej. juan_perez" 
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 transition-all placeholder:text-slate-400">
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="relative group">
+                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">Correo Electrónico</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-600 transition-colors"></i>
+                            <input type="email" placeholder="paciente@hospital.com" 
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="relative group">
+                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">Contraseña</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-600 transition-colors"></i>
+                            <input type="password" placeholder="••••••••" 
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Repeat Password -->
+                    <div class="relative group">
+                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">Confirmar Contraseña</label>
+                        <div class="relative">
+                            <i class="fas fa-check-double absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-600 transition-colors"></i>
+                            <input type="password" placeholder="••••••••" 
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="relative group">
+                    <label class="text-xs font-bold text-slate-500 uppercase ml-1">Dirección de Residencia</label>
+                    <div class="relative">
+                        <i class="fas fa-map-marker-alt absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-600 transition-colors"></i>
+                        <input type="text" placeholder="Calle, Número, Colonia..." 
+                            class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 transition-all">
+                    </div>
+                </div>
+
+                <!-- Phone -->
+                <div class="relative group">
+                    <label class="text-xs font-bold text-slate-500 uppercase ml-1">Número de Teléfono</label>
+                    <div class="relative">
+                        <i class="fas fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-600 transition-colors"></i>
+                        <input type="tel" placeholder="+52 000 000 0000" 
+                            class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 transition-all">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-cyan-200 transition-all transform hover:-translate-y-1 active:scale-[0.98] flex items-center justify-center gap-2">
+                        <span>Finalizar Registro</span>
+                        <i class="fas fa-arrow-right text-sm"></i>
+                    </button>
+                    <p class="text-center text-slate-400 text-xs mt-6">
+                        ¿Ya tienes una cuenta? <a href="#" class="text-cyan-600 font-bold hover:underline">Inicia sesión aquí</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca del Dragón - Lector Medieval</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+
+        :root {
+            --color-parchment: #f5e9d4;
+            --color-parchment-dark: #e6d4b9;
+            --color-leather: #8b4513;
+            --color-leather-light: #a0522d;
+            --color-gold: #daa520;
+            --color-gold-dark: #b8860b;
+            --color-ink: #2c1810;
+            --color-stone: #5a4d41;
+            --color-fire: #d2691e;
+            --color-shadow: rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            background-color: #1a1208;
+            background-image: radial-gradient(circle at 20% 30%, #2c1810 0%, #1a1208 40%);
+            color: var(--color-ink);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M50,0 C77.614,0 100,22.386 100,50 C100,77.614 77.614,100 50,100 C22.386,100 0,77.614 0,50 C0,22.386 22.386,0 50,0 Z" fill="none" stroke="%232c1810" stroke-width="0.5"/></svg>');
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: var(--color-parchment);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px var(--color-shadow),
+                        inset 0 0 0 1px var(--color-leather-light);
+            overflow: hidden;
+            position: relative;
+            min-height: 90vh;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M20,20 L80,20 L80,80 L20,80 Z" fill="none" stroke="%238b4513" stroke-width="0.2" opacity="0.3"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        header {
+            background: linear-gradient(to right, var(--color-leather), var(--color-leather-light));
+            color: var(--color-gold);
+            padding: 20px 30px;
+            border-bottom: 3px solid var(--color-gold);
+            position: relative;
+            z-index: 1;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px var(--color-shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        header h1 i {
+            color: var(--color-fire);
+        }
+
+        .header-subtitle {
+            font-style: italic;
+            margin-top: 5px;
+            color: var(--color-parchment);
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            display: flex;
+            height: calc(100vh - 200px);
+            min-height: 600px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .library-panel {
+            width: 300px;
+            background-color: var(--color-parchment-dark);
+            border-right: 2px solid var(--color-leather-light);
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .library-panel h2 {
+            color: var(--color-leather);
+            border-bottom: 2px solid var(--color-gold);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .book-item {
+            background-color: var(--color-parchment);
+            border: 1px solid var(--color-leather-light);
+            border-radius: 5px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .book-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px var(--color-shadow);
+            border-color: var(--color-gold);
+        }
+
+        .book-item.active {
+            background-color: var(--color-leather);
+            color: var(--color-gold);
+            border-color: var(--color-gold);
+        }
+
+        .book-item i {
+            color: var(--color-leather-light);
+        }
+
+        .book-item.active i {
+            color: var(--color-gold);
+        }
+
+        .book-progress {
+            height: 4px;
+            background-color: var(--color-parchment-dark);
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .book-progress-bar {
+            height: 100%;
+            background-color: var(--color-gold);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .reader-panel {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .reader-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--color-leather-light);
+        }
+
+        .book-title {
+            font-size: 1.8rem;
+            color: var(--color-leather);
+            font-weight: bold;
+        }
+
+        .reader-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            background-color: var(--color-leather);
+            color: var(--color-parchment);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: var(--color-leather-light);
+            transform: translateY(-2px);
+        }
+
+        .btn i {
+            font-size: 1.1rem;
+        }
+
+        .btn-gold {
+            background-color: var(--color-gold);
+            color: var(--color-ink);
+        }
+
+        .btn-gold:hover {
+            background-color: var(--color-gold-dark);
+        }
+
+        .reader-content {
+            flex: 1;
+            background-color: white;
+            border: 1px solid var(--color-leather-light);
+            border-radius: 5px;
+            padding: 25px;
+            overflow-y: auto;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            box-shadow: inset 0 0 10px var(--color-shadow);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .reader-content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(to bottom, transparent 95%, rgba(139, 69, 19, 0.05) 100%);
+            pointer-events: none;
+        }
+
+        .page-info {
+            text-align: center;
+            color: var(--color-stone);
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .audio-panel {
+            background-color: var(--color-parchment-dark);
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid var(--color-leather-light);
+        }
+
+        .audio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .audio-btn {
+            background: none;
+            border: none;
+            color: var(--color-leather);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audio-btn:hover {
+            color: var(--color-gold);
+            background-color: rgba(139, 69, 19, 0.1);
+        }
+
+        .audio-btn.play-pause {
+            background-color: var(--color-leather);
+            color: var(--color-parchment);
+        }
+
+        .audio-btn.play-pause:hover {
+            background-color: var(--color-leather-light);
+        }
+
+        .audio-progress {
+            flex: 1;
+            height: 6px;
+            background-color: var(--color-parchment);
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .audio-progress-bar {
+            height: 100%;
+            background-color: var(--color-gold);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .audio-time {
+            color: var(--color-stone);
+            font-size: 0.9rem;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .file-upload {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(139, 69, 19, 0.1);
+            border-radius: 5px;
+            border: 2px dashed var(--color-leather-light);
+        }
+
+        .file-upload h3 {
+            margin-bottom: 10px;
+            color: var(--color-leather);
+        }
+
+        .upload-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--color-leather);
+            color: var(--color-parchment);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .upload-btn:hover {
+            background-color: var(--color-leather-light);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .fire-effect {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: radial-gradient(ellipse at center, rgba(210, 105, 30, 0.3) 0%, rgba(139, 69, 19, 0.1) 50%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: flicker 4s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 0.9; }
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .library-panel {
+                width: 100%;
+                height: 300px;
+            }
+        }
+
+        /* Estilos para el contenido del libro */
+        .book-content h1 {
+            color: var(--color-leather);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--color-gold);
+        }
+
+        .book-content h2 {
+            color: var(--color-leather-light);
+            margin: 15px 0;
+        }
+
+        .book-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .book-content em {
+            color: var(--color-stone);
+            font-style: italic;
+        }
+
+        .book-content strong {
+            color: var(--color-leather);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="fire-effect"></div>
+    
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-dragon"></i> Biblioteca del Dragón</h1>
+            <div class="header-subtitle">Donde las historias cobran vida... y voz</div>
+        </header>
+        
+        <div class="main-content">
+            <div class="library-panel">
+                <h2><i class="fas fa-scroll"></i> Tu Biblioteca</h2>
+                <div id="book-list">
+                    <!-- Los libros se cargarán aquí dinámicamente -->
+                </div>
+                
+                <div class="file-upload">
+                    <h3><i class="fas fa-upload"></i> Agregar Libro</h3>
+                    <p>Sube archivos PDF, EPUB o texto</p>
+                    <label for="file-input" class="upload-btn">
+                        <i class="fas fa-plus-circle"></i> Seleccionar Archivo
+                    </label>
+                    <input type="file" id="file-input" accept=".pdf,.epub,.txt">
+                </div>
+            </div>
+            
+            <div class="reader-panel">
+                <div class="reader-header">
+                    <div class="book-title" id="current-book-title">Selecciona un libro de tu biblioteca</div>
+                    <div class="reader-controls">
+                        <button class="btn" id="prev-page">
+                            <i class="fas fa-chevron-left"></i> Anterior
+                        </button>
+                        <button class="btn btn-gold" id="next-page">
+                            Siguiente <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="reader-content" id="reader-content">
+                    <div style="text-align: center; padding: 50px; color: var(--color-stone);">
+                        <i class="fas fa-book-open fa-3x" style="margin-bottom: 20px; color: var(--color-leather-light);"></i>
+                        <h2>Bienvenido a la Biblioteca del Dragón</h2>
+                        <p>Selecciona un libro de tu biblioteca o sube uno nuevo para comenzar a leer.</p>
+                        <p>Tu progreso se guardará automáticamente.</p>
+                    </div>
+                </div>
+                
+                <div class="page-info">
+                    Página <span id="current-page">-</span> de <span id="total-pages">-</span>
+                </div>
+                
+                <div class="audio-panel">
+                    <div class="audio-header">
+                        <h3><i class="fas fa-volume-up"></i> Narración por Voz</h3>
+                        <div class="audio-time">
+                            <span id="current-time">00:00</span> / <span id="total-time">00:00</span>
+                        </div>
+                    </div>
+                    <div class="audio-controls">
+                        <button class="audio-btn" id="rewind">
+                            <i class="fas fa-backward"></i>
+                        </button>
+                        <button class="audio-btn play-pause" id="play-pause">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="audio-btn" id="forward">
+                            <i class="fas fa-forward"></i>
+                        </button>
+                        <div class="audio-progress" id="audio-progress">
+                            <div class="audio-progress-bar" id="audio-progress-bar"></div>
+                        </div>
+                        <button class="audio-btn" id="voice-select">
+                            <i class="fas fa-user"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de datos simple usando localStorage
+        const libraryDB = {
+            key: 'medieval-library-data',
+            
+            // Obtener todos los libros
+            getAllBooks: function() {
+                const data = localStorage.getItem(this.key);
+                return data ? JSON.parse(data) : [];
+            },
+            
+            // Guardar un libro
+            saveBook: function(book) {
+                const books = this.getAllBooks();
+                const existingIndex = books.findIndex(b => b.id === book.id);
+                
+                if (existingIndex >= 0) {
+                    books[existingIndex] = book;
+                } else {
+                    books.push(book);
+                }
+                
+                localStorage.setItem(this.key, JSON.stringify(books));
+                return book;
+            },
+            
+            // Eliminar un libro
+            deleteBook: function(id) {
+                const books = this.getAllBooks();
+                const filteredBooks = books.filter(b => b.id !== id);
+                localStorage.setItem(this.key, JSON.stringify(filteredBooks));
+            },
+            
+            // Obtener un libro por ID
+            getBook: function(id) {
+                const books = this.getAllBooks();
+                return books.find(b => b.id === id);
+            },
+            
+            // Actualizar el progreso de lectura
+            updateProgress: function(bookId, currentPage, totalPages) {
+                const book = this.getBook(bookId);
+                if (book) {
+                    book.currentPage = currentPage;
+                    book.totalPages = totalPages;
+                    book.lastRead = new Date().toISOString();
+                    this.saveBook(book);
+                }
+            }
+        };
+
+        // Libros de ejemplo con temática medieval/fantasía
+        const sampleBooks = [
+            {
+                id: '1',
+                title: 'La Espada del Reino Olvidado',
+                author: 'Alistair de Montfort',
+                content: `# Capítulo 1: El Descubrimiento
+
+El viento soplaba frío a través de las ruinas del castillo de Eldoria. Las piedras grises, testigos de siglos pasados, susurraban historias de gloria y traición. Era aquí, entre escombros y leyendas, donde Arion encontró la espada.
+
+No era un arma cualquiera. Su empuñadura, adornada con runas antiguas, brillaba con una luz tenue incluso en la oscuridad más profunda. Los aldeanos hablaban de ella en susurros alrededor del fuego: la Espada de los Reyes Olvidados, forjada en los fuegos del dragón Aethelred.
+
+**"Sólo el verdadero heredero de Eldoria puede despertar su poder"**, había dicho el anciano bardo la noche anterior. Arion dudaba de ser ese heredero. Era sólo un granjero, un huérfano criado por el herrero del pueblo.
+
+Pero cuando sus dedos cerraron alrededor de la empuñadura, algo cambió. Un calor recorrió su brazo, y las runas comenzaron a brillar con intensidad. Por un momento, vio visiones: un rey con corona de estrellas, una batalla contra sombras que se retorcían, un juramento hecho hace mil años.
+
+De repente, un sonido rompió el hechizo. Pasos. Alguien más estaba en las ruinas.
+
+**"Así que lo encontraste"**, una voz suave pero peligrosa resonó entre las piedras. **"Pensé que te llevaría más tiempo."**
+
+Arion se volvió, la espada en alto. Frente a él estaba Lord Maldred, el consejero del duque, con una sonrisa que no llegaba a sus ojos fríos como el hielo.
+
+**"Esa espada pertenece a mi maestro"**, dijo Maldred, desenvainando su propia hoja. **"Y tú, granjero, morirás por haberla tocado."**
+
+Arion no sabía luchar, pero la espada parecía guiar sus movimientos. Cuando las hojas chocaron, una chispa de energía mágica iluminó las ruinas. La batalla por el destino de Eldoria había comenzado.`,
+                currentPage: 1,
+                totalPages: 10,
+                lastRead: new Date().toISOString(),
+                type: 'text'
+            },
+            {
+                id: '2',
+                title: 'Crónicas del Guardián del Umbral',
+                author: 'Seraphina de las Sombras',
+                content: `# Prólogo: El Último Guardián
+
+La noche en que el Umbral se abrió, las estrellas dejaron de brillar sobre el Reino de Loth. No fue un evento repentino, sino un lento y agonizante ocaso que sumió a la tierra en una penumbra perpetua.
+
+En la Torre del Alba, el último de los Guardianes, Elara, observaba el horizonte con ojos entristecidos. Su linaje había protegido el Umbral por mil años, pero ahora la magia se desvanecía, y con ella, las barreras que mantenían a raya a las Sombras.
+
+**"Maestra"**, una voz joven interrumpió sus pensamientos. Era Kael, su aprendiz. **"Los cristales de contención... se están agrietando."**
+
+Elara giró sobre sus talones, su túnica azul oscuro ondeando como alas de cuervo. **"Entonces ha llegado el momento"**, susurró, más para sí misma que para el muchacho. **"Prepara los pergaminos de viaje. Debemos llegar al Corazón del Umbral antes del eclipse."**
+
+Kael asintió, pero su rostro reflejaba el miedo que ambos sentían. El Corazón del Umbral era un lugar del que ningún Guardián había regresado jamás. Las leyendas decían que allí residía la fuente misma de la magia, pero también el origen de las Sombras.
+
+Mientras empacaban los pocos artefactos mágicos que quedaban, Elara recordó las palabras de su mentor: **"Cuando las sombras avancen, sólo la luz interior podrá guiarte. Pero cuidado, porque esa misma luz puede cegarte a las verdades más oscuras."**
+
+El viaje los llevaría a través del Bosque de los Susurros, donde los árboles recordaban cada secreto jamás contado, y más allá de las Montañas Humeantes, donde los dragones de piedra custodiaban pasajes olvidados.
+
+Al salir de la torre, Elara echó un último vistazo a la biblioteca, sus estantes repletos de conocimientos ancestrales. Tal vez, si sobrevivían, algún día volvería a estudiar aquellos textos. O tal vez, se convertirían en polvo como todo lo demás.
+
+La primera sombra los atacó antes de que llegaran al borde del bosque. No era un ser físico, sino una ausencia, un vacío que absorbía la luz y el sonido a su alrededor. Elara levantó su bastón, y la punta de cristal brilló con una luz pálida pero firme.
+
+**"Recuerda, Kael"**, gritó mientras la sombra se arremolinaba a su alrededor. **"No luchamos contra la oscuridad. La transformamos."**
+
+La luz del bastón creció, tejiendo patrones complejos en el aire. Las runas flotantes parecían hacer retroceder a la sombra, pero sólo momentáneamente. Era sólo el primero de muchos encuentros en su peligroso viaje hacia el corazón de la amenaza que consumía su mundo.`,
+                currentPage: 1,
+                totalPages: 8,
+                lastRead: new Date().toISOString(),
+                type: 'text'
+            }
+        ];
+
+        // Estado de la aplicación
+        const state = {
+            currentBook: null,
+            currentPage: 1,
+            totalPages: 1,
+            isPlaying: false,
+            speechSynthesis: window.speechSynthesis,
+            currentVoice: null,
+            voices: [],
+            speechUtterance: null
+        };
+
+        // Inicializar la biblioteca con libros de ejemplo si está vacía
+        function initLibrary() {
+            const books = libraryDB.getAllBooks();
+            if (books.length === 0) {
+                sampleBooks.forEach(book => libraryDB.saveBook(book));
+            }
+            renderBookList();
+        }
+
+        // Renderizar la lista de libros
+        function renderBookList() {
+            const bookList = document.getElementById('book-list');
+            const books = libraryDB.getAllBooks();
+            
+            bookList.innerHTML = '';
+            
+            books.forEach(book => {
+                const progressPercent = book.totalPages ? (book.currentPage / book.totalPages) * 100 : 0;
+                
+                const bookElement = document.createElement('div');
+                bookElement.className = `book-item ${state.currentBook?.id === book.id ? 'active' : ''}`;
+                bookElement.innerHTML = `
+                    <i class="fas fa-book"></i>
+                    <div>
+                        <div><strong>${book.title}</strong></div>
+                        <div style="font-size: 0.9em; color: var(--color-stone);">${book.author}</div>
+                        <div class="book-progress">
+                            <div class="book-progress-bar" style="width: ${progressPercent}%"></div>
+                        </div>
+                    </div>
+                `;
+                
+                bookElement.addEventListener('click', () => {
+                    loadBook(book);
+                });
+                
+                // Botón para eliminar libro (solo para libros no de ejemplo)
+                if (!sampleBooks.some(sb => sb.id === book.id)) {
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    deleteBtn.style.cssText = `
+                        position: absolute;
+                        right: 10px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        background: transparent;
+                        border: none;
+                        color: var(--color-stone);
+                        cursor: pointer;
+                        font-size: 1rem;
+                    `;
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (confirm(`¿Eliminar "${book.title}" de tu biblioteca?`)) {
+                            libraryDB.deleteBook(book.id);
+                            if (state.currentBook?.id === book.id) {
+                                state.currentBook = null;
+                                document.getElementById('reader-content').innerHTML = `
+                                    <div style="text-align: center; padding: 50px; color: var(--color-stone);">
+                                        <i class="fas fa-book-open fa-3x" style="margin-bottom: 20px; color: var(--color-leather-light);"></i>
+                                        <h2>Libro eliminado</h2>
+                                        <p>Selecciona otro libro de tu biblioteca.</p>
+                                    </div>
+                                `;
+                                document.getElementById('current-book-title').textContent = 'Selecciona un libro de tu biblioteca';
+                                document.getElementById('current-page').textContent = '-';
+                                document.getElementById('total-pages').textContent = '-';
+                                stopAudio();
+                            }
+                            renderBookList();
+                        }
+                    });
+                    bookElement.appendChild(deleteBtn);
+                }
+                
+                bookList.appendChild(bookElement);
+            });
+        }
+
+        // Cargar un libro en el lector
+        function loadBook(book) {
+            state.currentBook = book;
+            state.currentPage = book.currentPage || 1;
+            state.totalPages = book.totalPages || 1;
+            
+            // Actualizar UI
+            document.getElementById('current-book-title').textContent = book.title;
+            document.getElementById('current-page').textContent = state.currentPage;
+            document.getElementById('total-pages').textContent = state.totalPages;
+            
+            // Mostrar contenido
+            displayBookContent();
+            
+            // Actualizar lista de libros
+            renderBookList();
+            
+            // Inicializar audio si está disponible
+            initAudioForBook();
+        }
+
+        // Mostrar el contenido del libro
+        function displayBookContent() {
+            const contentDiv = document.getElementById('reader-content');
+            
+            if (!state.currentBook) return;
+            
+            // Dividir el contenido en "páginas" (para simulación)
+            const words = state.currentBook.content.split(' ');
+            const wordsPerPage = 300;
+            const startIdx = (state.currentPage - 1) * wordsPerPage;
+            const endIdx = Math.min(startIdx + wordsPerPage, words.length);
+            
+            const pageContent = words.slice(startIdx, endIdx).join(' ');
+            
+            // Mostrar contenido con formato básico
+            contentDiv.innerHTML = `
+                <div class="book-content">
+                    <h1>${state.currentBook.title}</h1>
+                    <h2>${state.currentBook.author}</h2>
+                    <div>${formatText(pageContent)}</div>
+                </div>
+            `;
+            
+            // Actualizar base de datos con el progreso
+            libraryDB.updateProgress(state.currentBook.id, state.currentPage, state.totalPages);
+        }
+
+        // Formatear texto simple (simula formato básico)
+        function formatText(text) {
+            // Convertir **texto** a negrita
+            let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Convertir *texto* a cursiva
+            formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            // Convertir # Título a h1
+            formatted = formatted.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+            // Convertir ## Subtítulo a h2
+            formatted = formatted.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+            // Convertir saltos de línea a párrafos
+            formatted = formatted.split('\n\n').map(p => `<p>${p}</p>`).join('');
+            
+            return formatted;
+        }
+
+        // Inicializar audio para el libro actual
+        function initAudioForBook() {
+            if (!state.currentBook) return;
+            
+            // Detener cualquier audio en reproducción
+            stopAudio();
+            
+            // Configurar voces disponibles
+            loadVoices();
+        }
+
+        // Cargar las voces disponibles
+        function loadVoices() {
+            // Las voces pueden tardar en cargar
+            state.voices = state.speechSynthesis.getVoices();
+            
+            // Si no hay voces, intentar de nuevo después de un tiempo
+            if (state.voices.length === 0) {
+                setTimeout(loadVoices, 100);
+                return;
+            }
+            
+            // Seleccionar una voz en español si está disponible
+            const spanishVoice = state.voices.find(voice => 
+                voice.lang.startsWith('es') || voice.name.includes('Spanish')
+            );
+            
+            state.currentVoice = spanishVoice || state.voices[0];
+        }
+
+        // Reproducir audio del libro actual
+        function playAudio() {
+            if (!state.currentBook || state.isPlaying) return;
+            
+            stopAudio(); // Asegurarse de que no hay audio previo
+            
+            const contentDiv = document.getElementById('reader-content');
+            const textToSpeak = contentDiv.textContent || contentDiv.innerText;
+            
+            if (!textToSpeak.trim()) return;
+            
+            state.speechUtterance = new SpeechSynthesisUtterance(textToSpeak);
+            state.speechUtterance.voice = state.currentVoice;
+            state.speechUtterance.rate = 1.0;
+            state.speechUtterance.pitch = 1.0;
+            state.speechUtterance.volume = 1.0;
+            
+            // Actualizar estado
+            state.isPlaying = true;
+            document.getElementById('play-pause').innerHTML = '<i class="fas fa-pause"></i>';
+            
+            // Eventos para actualizar la barra de progreso
+            state.speechUtterance.onboundary = function(event) {
+                // Actualizar progreso (simplificado)
+                const progress = (event.charIndex / textToSpeak.length) * 100;
+                document.getElementById('audio-progress-bar').style.width = `${progress}%`;
+            };
+            
+            state.speechUtterance.onend = function() {
+                state.isPlaying = false;
+                document.getElementById('play-pause').innerHTML = '<i class="fas fa-play"></i>';
+                document.getElementById('audio-progress-bar').style.width = '0%';
+            };
+            
+            state.speechSynthesis.speak(state.speechUtterance);
+        }
+
+        // Pausar/reanudar audio
+        function toggleAudio() {
+            if (state.isPlaying) {
+                pauseAudio();
+            } else {
+                playAudio();
+            }
+        }
+
+        // Pausar audio
+        function pauseAudio() {
+            if (!state.isPlaying) return;
+            
+            state.speechSynthesis.pause();
+            state.isPlaying = false;
+            document.getElementById('play-pause').innerHTML = '<i class="fas fa-play"></i>';
+        }
+
+        // Detener audio completamente
+        function stopAudio() {
+            if (state.speechSynthesis.speaking) {
+                state.speechSynthesis.cancel();
+            }
+            state.isPlaying = false;
+            document.getElementById('play-pause').innerHTML = '<i class="fas fa-play"></i>';
+            document.getElementById('audio-progress-bar').style.width = '0%';
+        }
+
+        // Cambiar a la página siguiente
+        function nextPage() {
+            if (!state.currentBook || state.currentPage >= state.totalPages) return;
+            
+            state.currentPage++;
+            displayBookContent();
+            
+            // Actualizar base de datos
+            libraryDB.updateProgress(state.currentBook.id, state.currentPage, state.totalPages);
+            
+            // Detener audio si está reproduciendo
+            stopAudio();
+        }
+
+        // Cambiar a la página anterior
+        function prevPage() {
+            if (!state.currentBook || state.currentPage <= 1) return;
+            
+            state.currentPage--;
+            displayBookContent();
+            
+            // Actualizar base de datos
+            libraryDB.updateProgress(state.currentBook.id, state.currentPage, state.totalPages);
+            
+            // Detener audio si está reproduciendo
+            stopAudio();
+        }
+
+        // Manejar carga de archivos
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                // Crear un nuevo libro a partir del archivo
+                const newBook = {
+                    id: 'book-' + Date.now(),
+                    title: file.name.replace(/\.[^/.]+$/, ""), // Eliminar extensión
+                    author: 'Autor desconocido',
+                    content: 'Contenido del archivo cargado. Para una experiencia completa, sube archivos de texto con formato.',
+                    currentPage: 1,
+                    totalPages: 10,
+                    lastRead: new Date().toISOString(),
+                    type: file.type
+                };
+                
+                // Para archivos de texto, leer el contenido
+                if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                    newBook.content = e.target.result;
+                } else {
+                    newBook.content = `Archivo cargado: ${file.name}\n\nEsta aplicación soporta archivos de texto directamente. Para PDF y EPUB, se requiere un backend para procesamiento.`;
+                }
+                
+                // Guardar en la biblioteca
+                libraryDB.saveBook(newBook);
+                
+                // Cargar el nuevo libro
+                loadBook(newBook);
+                
+                // Actualizar lista
+                renderBookList();
+                
+                // Limpiar input
+                event.target.value = '';
+            };
+            
+            if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                reader.readAsText(file);
+            } else {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Seleccionar voz diferente
+        function selectVoice() {
+            if (state.voices.length === 0) {
+                alert('No hay voces disponibles en tu navegador.');
+                return;
+            }
+            
+            const voiceNames = state.voices.map((voice, index) => `${index + 1}. ${voice.name} (${voice.lang})`);
+            const selection = prompt(`Selecciona una voz:\n\n${voiceNames.join('\n')}\n\nIngresa el número:`);
+            
+            if (selection && !isNaN(selection)) {
+                const index = parseInt(selection) - 1;
+                if (index >= 0 && index < state.voices.length) {
+                    state.currentVoice = state.voices[index];
+                    alert(`Voz cambiada a: ${state.currentVoice.name}`);
+                    
+                    // Si hay audio reproduciéndose, reiniciar con nueva voz
+                    if (state.isPlaying) {
+                        stopAudio();
+                        setTimeout(playAudio, 100);
+                    }
+                }
+            }
+        }
+
+        // Inicializar la aplicación
+        function initApp() {
+            // Inicializar biblioteca
+            initLibrary();
+            
+            // Configurar event listeners
+            document.getElementById('next-page').addEventListener('click', nextPage);
+            document.getElementById('prev-page').addEventListener('click', prevPage);
+            document.getElementById('play-pause').addEventListener('click', toggleAudio);
+            document.getElementById('rewind').addEventListener('click', () => {
+                if (state.currentPage > 1) {
+                    prevPage();
+                }
+            });
+            document.getElementById('forward').addEventListener('click', () => {
+                if (state.currentBook && state.currentPage < state.totalPages) {
+                    nextPage();
+                }
+            });
+            document.getElementById('voice-select').addEventListener('click', selectVoice);
+            document.getElementById('file-input').addEventListener('change', handleFileUpload);
+            
+            // Barra de progreso de audio
+            document.getElementById('audio-progress').addEventListener('click', function(e) {
+                if (!state.currentBook) return;
+                
+                const rect = this.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const percentage = clickX / rect.width;
+                
+                // Para una implementación real, necesitaríamos controlar
+                // la posición de reproducción del audio
+                document.getElementById('audio-progress-bar').style.width = `${percentage * 100}%`;
+            });
+            
+            // Cargar voces cuando estén disponibles
+            state.speechSynthesis.onvoiceschanged = loadVoices;
+            
+            // Atajos de teclado
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    nextPage();
+                } else if (e.key === 'ArrowLeft') {
+                    prevPage();
+                } else if (e.key === 'p' || e.key === 'P') {
+                    toggleAudio();
+                }
+            });
+            
+            // Cargar el último libro leído si existe
+            const books = libraryDB.getAllBooks();
+            if (books.length > 0) {
+                // Ordenar por última lectura
+                books.sort((a, b) => new Date(b.lastRead) - new Date(a.lastRead));
+                loadBook(books[0]);
+            }
+        }
+
+        // Iniciar la aplicación cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
